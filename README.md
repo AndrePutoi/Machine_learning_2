@@ -5,8 +5,6 @@ t-SNE/UMAP, autoencoders (Dense, Conv, Transformer) com latentes d ∈ {2, 8, 16
 dois autoencoders especializados (Conv-VAE e Conv-DAE, mesma grelha de d), classificação e retrieval
 em todos os espaços, robustez a queries ruidosas e análise de falhas.
 
-> A extensão de cor (Fase 7) **não** foi usada: só se trabalha com o Fashion-MNIST em `dados/`.
-
 ## Como correr
 
 ```bash
