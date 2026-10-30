@@ -130,6 +130,6 @@ docs/PROVENIENCIA.md   scripts, requisitos e origem de cada figura e tabela
 - Seed global **42** (Python, NumPy, PyTorch) definida antes de cada split, ajuste e construção de modelo.
 - Splits estratificados guardados como índices; o test (10k) só é usado nas tabelas finais.
 - Toda a configuração está em `config.yaml`; versões em `outputs/env.txt`.
-- Hardware usado: 1 × RTX 2080 Ti (11 GB), partilhada com outros processos (ver `docs/LOG.md`).
+- Hardware usado: 1 × RTX 2080 Ti (11 GB).
   Mesmo com seed fixa, os kernels CUDA não são todos determinísticos, por isso podem surgir
   diferenças pequenas (na 3.ª ou 4.ª casa decimal) entre execuções.
