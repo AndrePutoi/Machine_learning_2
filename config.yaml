@@ -1,0 +1,101 @@
+# Configuração central do projeto (Fashion-MNIST, redução de dimensionalidade).
+# Todos os scripts leem este ficheiro; alterar aqui e voltar a correr.
+
+seed: 42
+
+paths:
+  data_dir: dados
+  outputs: outputs
+
+data:
+  val_size: 6000          # 60k treino -> 54k train / 6k val (estratificado)
+  viz_subset: 10000       # subconjunto estratificado do train para t-SNE/UMAP e métricas de agrupamento
+  classes: [T-shirt/top, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, Ankle boot]
+
+eda:
+  knn_k: 5
+
+pca:
+  ks: [2, 8, 16, 32, 64, 128]
+  var_thresholds: [0.80, 0.90, 0.95, 0.99]
+  knn_k: 5
+  ipca_components: 128
+  ipca_batch: 2048
+  kpca_subset: 10000
+  kpca_components: 128
+  kpca_chunk: 4000
+
+twonn:
+  discard_fraction: 0.10
+
+viz:
+  perplexities: [5, 30, 50]
+  n_neighbors: [5, 15, 50]
+  pca_dims: 50
+  quality_k: 10           # vizinhança usada em trustworthiness/continuity
+  ae_for_viz: conv_ae_d32 # latente usado na Fase 3
+  # adenda: UMAP dos especializados (e do ConvAE base ao mesmo d, como referência)
+  specialized_inputs: [conv_ae_d16, vae_conv_d16, dae_conv_d16, conv_ae_d64, vae_conv_d64, dae_conv_d64]
+
+ae:
+  archs: [dense_ae, conv_ae, transformer_ae]
+  dims: [2, 8, 16, 32, 64, 128]
+  optimizer: adamw
+  lr: 1.0e-3
+  weight_decay: 0.0
+  warmup_steps: 500
+  batch_size: 256
+  max_epochs: 60
+  patience: 8             # early stopping no MSE de validação
+  min_delta: 1.0e-6
+  plateau_patience: 3     # ReduceLROnPlateau (igual para todas as arquiteturas)
+  plateau_factor: 0.5
+  amp: false
+  parallel_jobs: 2
+  transformer:
+    patch: 4
+    embed_dim: 128
+    depth: 4
+    heads: 4
+    mlp_ratio: 2
+  # adenda: autoencoders especializados, com o mesmo protocolo e a mesma grelha de d
+  specialized: [vae_conv, dae_conv]
+  vae:
+    beta: 1.0
+    kl_warmup_epochs: 10          # beta sobe linearmente de 0 a beta nas primeiras 10 épocas
+    active_unit_threshold: 0.01   # unidade ativa: Var_x[mu_j] > 0.01
+  dae:
+    sigma: 0.3                    # ruído gaussiano no input de treino (clip a [0,1])
+
+cnn:
+  batch_size: 256
+  lr: 1.0e-3
+  max_epochs: 40
+  patience: 6
+
+classification:
+  knn_k: 5
+  logreg_C: 1.0
+  logreg_max_iter: 1000
+
+retrieval:
+  ks: [1, 5, 10, 20]
+  n_queries: 2000         # queries estratificadas do test; galeria = train (54k)
+  proxy_queries: 500      # queries usadas na proxy de similaridade visual (SSIM/IoU)
+  silhouette_threshold: 0.1
+  block: 512
+
+failures:
+  n_cases: 12
+  spaces: [raw, pca_k64, conv_ae_d32, hog, vae_conv_d32, dae_conv_d32]
+
+robustness:                       # adenda: queries ruidosas contra a galeria limpa
+  sigmas: [0.0, 0.1, 0.3, 0.5]
+  spaces: [raw, pca_k64, conv_ae_d64, dae_conv_d64, vae_conv_d64]
+  k: 10
+
+specialized:                      # adenda: amostras e interpolação do VAE
+  sample_dims: [2, 16, 64]
+  interp_dims: [16, 64]
+  interp_pairs: 200
+  interp_steps: 10
