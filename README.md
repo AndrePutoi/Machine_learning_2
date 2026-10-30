@@ -76,7 +76,7 @@ z = ae_encode(X, "transformer_ae", 32);  Xr = ae_decode(z, "transformer_ae", 32)
 ## Onde é calculado cada resultado
 
 Cada figura e tabela do relatório tem uma legenda com o script, a função, a linha, o cálculo, os dados de entrada e o
-comando que a refaz. Os índices completos estão em `docs/PROVENIENCIA.md` e nos Anexos A a D do relatório; o Anexo A liga
+comando que a refaz. Os índices completos estão em  Anexos A a D do relatório; o Anexo A liga
 cada requisito do enunciado e da adenda ao código. O `src/provenance.py` procura as linhas no código de cada vez e falha se
 um ficheiro de `outputs/` ficar sem origem ou se uma função citada não existir.
 
